@@ -13,6 +13,8 @@ class VendorsController < ApplicationController
 
   def edit
     @vendor = ::Vendor.find(params[:id])
+
+    render :json => @vendor
   end
 
   def destroy
@@ -29,14 +31,20 @@ class VendorsController < ApplicationController
 
   def index
     @vendors = ::Vendor.all
+
+    render :json => @vendors
   end
 
   def new
     @vendor = ::Vendor.new
+
+    render :json => @vendor
   end
 
   def show
     @vendor = ::Vendor.find(params[:id])
+
+    render :json => @vendor
   end
 
   def update
