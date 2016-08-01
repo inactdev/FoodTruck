@@ -52,21 +52,18 @@ describe VendorsController do
     let(:vendor) { ::Vendor.create! }
 
     it "responds successfully with an HTTP 200 status code" do
-      get :show, :id => vendor.id
+      get :edit, :id => vendor.id
       expect(response).to be_success
       expect(response).to have_http_status(200)
     end
 
     it "returns the Vendor record" do
-      get :show, :id => vendor.id
+      get :edit, :id => vendor.id
       expect(assigns(:vendor)).to match(vendor)
     end
   end
 
   describe "GET #index" do
-    let(:vendor1) { ::Vendor.create! }
-    let(:vendor2) { ::Vendor.create! }
-
     it "responds successfully with an HTTP 200 status code" do
       get :index
       expect(response).to be_success
@@ -74,6 +71,9 @@ describe VendorsController do
     end
 
     it "returns all Vendor records" do
+      vendor1 = ::Vendor.create!
+      vendor2 = ::Vendor.create!
+
       get :index
       expect(assigns(:vendors)).to match_array([vendor1, vendor2])
     end
