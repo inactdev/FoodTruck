@@ -32,7 +32,7 @@ class VendorsController < ApplicationController
   def index
     @vendors = ::Vendor.all
 
-    render :json => @vendors
+    render :json => @vendors, :adapter => :json
   end
 
   def new
