@@ -5,7 +5,7 @@ gem 'rails', '4.2.5.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.15'
 gem 'active_model_serializers'
-gem 'geocoder'
+gem 'geokit-rails'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
