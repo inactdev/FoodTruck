@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe VendorsController do
+describe ::Api::V1::VendorsController do
   describe "POST #create" do
     it "creates a new Vendor" do
       post :create, :vendor => { :name => "test" }
@@ -13,7 +13,6 @@ describe VendorsController do
       post :create, :vendor => { :name => "test" }
 
       expect(response).to redirect_to(vendor_path(assigns(:vendor)))
-      expect(flash[:success]).to be_present
     end
 
     before { request.env["HTTP_REFERER"] = "Redirect back" }
@@ -23,7 +22,6 @@ describe VendorsController do
       post :create, :vendor => { :name => "test" }
 
       expect(response).to redirect_to("Redirect back")
-      expect(flash[:error]).to be_present
     end
   end
 
@@ -34,7 +32,6 @@ describe VendorsController do
       post :destroy, :id => vendor.id
 
       expect(assigns(:vendor).destroyed?).to be true
-      expect(flash[:success]).to be_present
     end
 
     before { request.env["HTTP_REFERER"] = "Redirect back" }
@@ -44,7 +41,6 @@ describe VendorsController do
       post :destroy, :id => vendor.id
 
       expect(response).to redirect_to("Redirect back")
-      expect(flash[:error]).to be_present
     end
   end
 
@@ -121,7 +117,6 @@ describe VendorsController do
       post :update, :id => vendor.id, :vendor => { :name => "test" }
 
       expect(response).to redirect_to(vendor_path(assigns(:vendor)))
-      expect(flash[:success]).to be_present
     end
 
     before { request.env["HTTP_REFERER"] = "Redirect back" }
@@ -131,7 +126,6 @@ describe VendorsController do
       post :create, :vendor => { :name => "test" }
 
       expect(response).to redirect_to("Redirect back")
-      expect(flash[:error]).to be_present
     end
   end
 end
