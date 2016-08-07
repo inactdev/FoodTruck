@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe VendorsController do
+describe ::Api::V1::VendorsController do
   describe "POST #create" do
     it "creates a new Vendor" do
       post :create, :vendor => { :name => "test" }

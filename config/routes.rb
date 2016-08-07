@@ -3,10 +3,13 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  resources :vendors
-  resources :customers
+  scope module: 'api' do
+    scope module: 'v1' do
+      resources :vendors, :customers
+    end
+  end
 
-  root "vendors#index"
+  root "api/v1/vendors#index"
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
