@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   scope module: 'api' do
     scope module: 'v1' do
-      resources :vendors, :customers
+      resources :vendors, :customers, :owners, :sessions
     end
   end
 
