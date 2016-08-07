@@ -1,4 +1,6 @@
 class VendorsController < ApplicationController
+  skip_before_filter :verify_authenticity_token
+
   def create
     @vendor = ::Vendor.new(vendor_params)
 
@@ -62,6 +64,6 @@ class VendorsController < ApplicationController
   private
 
   def vendor_params
-    params.require(:vendor).permit(:name, :type, :description)
+    params.require(:vendor).permit(:name, :food_type, :description)
   end
 end
