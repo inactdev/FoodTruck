@@ -6,8 +6,6 @@ require "active_model/railtie"
 require "active_job/railtie"
 require "active_record/railtie"
 require "action_controller/railtie"
-require "action_mailer/railtie"
-require "action_view/railtie"
 require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
@@ -34,5 +32,7 @@ module Foodtruck
 
     # configures application to be API only
     config.api_only = true
+
+    # TODO configure ssl
   end
 end

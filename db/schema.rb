@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160801023301) do
+ActiveRecord::Schema.define(version: 20160807225609) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,20 @@ ActiveRecord::Schema.define(version: 20160801023301) do
     t.datetime "updated_at",     null: false
   end
 
+  create_table "owners", force: :cascade do |t|
+    t.string   "name"
+    t.string   "email"
+    t.boolean  "admin"
+    t.string   "password_digest"
+    t.string   "access_token"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "owners", ["access_token"], name: "index_owners_on_access_token", unique: true, using: :btree
+  add_index "owners", ["email"], name: "index_owners_on_email", unique: true, using: :btree
+  add_index "owners", ["name"], name: "index_owners_on_name", unique: true, using: :btree
+
   create_table "vendors", force: :cascade do |t|
     t.string   "name"
     t.string   "food_type"
@@ -37,6 +51,7 @@ ActiveRecord::Schema.define(version: 20160801023301) do
     t.float    "longitude"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.integer  "owner_id"
   end
 
 end
