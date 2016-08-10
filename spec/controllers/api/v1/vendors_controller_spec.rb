@@ -64,25 +64,43 @@ describe ::Api::V1::VendorsController do
     let!(:vendor2) { ::Vendor.create!(:name => "Tamra", :food_type => "Dominican", :latitude => 40.385039, :longitude => -111.885247) }
     let!(:vendor3) { ::Vendor.create!(:latitude => 40.830059, :longitude => -73.877286) }
 
-    it "responds successfully with an HTTP 200 status code" do
-      get :index
-      expect(response).to be_success
-      expect(response).to have_http_status(200)
+    context "when no coordinates are provided" do
+      it "returns We don't know where you are message" do
+        get :index
+
+        expect(response.body).to eq("We don't know where you are")
+      end
     end
 
-    it "returns all Vendor records within 5 miles" do
-      get :index
-      expect(assigns(:vendors)).to match_array([vendor1, vendor2])
-    end
+    context "when coordinates are provided" do
+      it "responds successfully with an HTTP 200 status code" do
+        get :index, :search => { :latitude => 40.386386, :longitude => -111.881778 }
+        expect(response).to be_success
+        expect(response).to have_http_status(200)
+      end
 
-    it "searches by name" do
-      get :index, :search => { :name => "Ari" }
-      expect(assigns(:vendors)).to match_array([vendor1])
-    end
+      it "by default returns all Vendor records within 5 miles" do
+        get :index, :search => { :latitude => 40.386386, :longitude => -111.881778 }
+        expect(assigns(:vendors)).to match_array([vendor1, vendor2])
+      end
 
-    it "searches by name" do
-      get :index, :search => { :food_type => "Dominican" }
-      expect(assigns(:vendors)).to match_array([vendor2])
+      context "should search" do
+        it "by distance" do
+          # search by huge radius to return all records
+          get :index, :search => { :distance => 3000, :latitude => 40.386386, :longitude => -111.881778}
+          expect(assigns(:vendors)).to match_array([vendor1, vendor2, vendor3])
+        end
+
+        it "by name" do
+          get :index, :search => { :latitude => 40.386386, :longitude => -111.881778, :name => "Ari" }
+          expect(assigns(:vendors)).to match_array([vendor1])
+        end
+
+        it "by food_type" do
+          get :index, :search => { :latitude => 40.386386, :longitude => -111.881778, :food_type => "Dominican" }
+          expect(assigns(:vendors)).to match_array([vendor2])
+        end
+      end
     end
   end
 
