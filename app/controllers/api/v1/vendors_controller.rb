@@ -1,7 +1,7 @@
 module Api
   module V1
     class VendorsController < ApplicationController
-      before_action :set_search, only: [:index]
+      before_action :set_search_area, only: [:index]
       skip_before_filter :verify_authenticity_token
 
       def create
@@ -31,11 +31,18 @@ module Api
       end
 
       def index
-        # TODO make this more adaptable.  Right now it's set at 5 miles from my house
-        @vendors = ::Vendor.within(5, :origin => [40.386386, -111.881778])
-        search if search_params
+        if @origin
+          # TODO make default distance customizable
+          @distance ||= 5
+          @vendors = ::Vendor.within(@distance, :origin => @origin)
+          search if includes_more_search_params?
 
-        render :json => @vendors, :adapter => :json
+          render :json => @vendors, :adapter => :json
+        else
+          render :text => "We don't know where you are"
+
+        end
+
       end
 
       def new
@@ -62,6 +69,10 @@ module Api
 
       private
 
+      def includes_more_search_params?
+        search_params[:name] || search_params[:food_type] || search_params[:description]
+      end
+
       def search
         @vendors = @vendors.by_name(search_params[:name]) if search_params[:name]
         @vendors = @vendors.by_food_type(search_params[:food_type]) if search_params[:food_type]
@@ -69,11 +80,11 @@ module Api
         @vendors = @vendors.by_description(search_params[:description]) if search_params[:description]
       end
 
-      def set_search
+      def set_search_area
         return unless search_params
         @distance = search_params[:distance]
-        @origin_location = [search_params[:latitude], search_params[:longitude]]
-        @origin_location = ::Vendor.geocode(search_params[:address]) if search_params[:address]
+        @origin = [search_params[:latitude], search_params[:longitude]]
+        @origin = ::Vendor.geocode(search_params[:address]) unless @origin
       end
 
       def search_params
