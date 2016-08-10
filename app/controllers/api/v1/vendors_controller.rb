@@ -34,7 +34,8 @@ module Api
         if @origin
           # TODO make default distance customizable
           @distance ||= 5
-          @vendors = ::Vendor.within(@distance, :origin => @origin)
+          bounds = ::Geokit::Bounds.from_point_and_radius(@origin, @distance)
+          @vendors = ::Vendor.in_bounds(bounds).all
           search if includes_more_search_params?
 
           render :json => @vendors, :adapter => :json
