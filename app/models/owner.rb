@@ -16,7 +16,7 @@ class Owner < ActiveRecord::Base
 
   # Returns a random token.
   def self.new_token
-    SecureRandom.urlsafe_base64
+    ::SecureRandom.urlsafe_base64
   end
 
   private
