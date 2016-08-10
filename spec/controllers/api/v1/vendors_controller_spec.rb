@@ -60,18 +60,29 @@ describe ::Api::V1::VendorsController do
   end
 
   describe "GET #index" do
+    let!(:vendor1) { ::Vendor.create!(:name => "Ari", :latitude => 40.429721, :longitude => -111.8920836) }
+    let!(:vendor2) { ::Vendor.create!(:name => "Tamra", :food_type => "Dominican", :latitude => 40.385039, :longitude => -111.885247) }
+    let!(:vendor3) { ::Vendor.create!(:latitude => 40.830059, :longitude => -73.877286) }
+
     it "responds successfully with an HTTP 200 status code" do
       get :index
       expect(response).to be_success
       expect(response).to have_http_status(200)
     end
 
-    it "returns all Vendor records" do
-      vendor1 = ::Vendor.create!
-      vendor2 = ::Vendor.create!
-
+    it "returns all Vendor records within 5 miles" do
       get :index
       expect(assigns(:vendors)).to match_array([vendor1, vendor2])
+    end
+
+    it "searches by name" do
+      get :index, :search => { :name => "Ari" }
+      expect(assigns(:vendors)).to match_array([vendor1])
+    end
+
+    it "searches by name" do
+      get :index, :search => { :food_type => "Dominican" }
+      expect(assigns(:vendors)).to match_array([vendor2])
     end
   end
 
