@@ -32,16 +32,18 @@ module Api
 
       def index
         if @origin
+          bounds = nil
           # TODO make default distance customizable
           @distance ||= 5
-          bounds = ::Geokit::Bounds.from_point_and_radius(@origin, @distance)
+          bounds = viewport_search # if a viewport was passed, set the bounds equal to it
+          bounds ||= ::Geokit::Bounds.from_point_and_radius(@origin, @distance) # else set the bounds equal to origin and distance
+          puts "Bounds: #{bounds}"
           @vendors = ::Vendor.in_bounds(bounds).all
           search if includes_more_search_params?
 
           render :json => @vendors, :adapter => :json
         else
           render :text => "We don't know where you are"
-
         end
 
       end
@@ -70,6 +72,13 @@ module Api
 
       private
 
+      def viewport_search
+        return nil unless search_params[:southwestPoint] && search_params[:northeastPoint]
+        sw_point = search_params[:southwestPoint].map(&:to_f)
+        ne_point = search_params[:northeastPoint].map(&:to_f)
+        return [Geokit::LatLng.new(sw_point.first, sw_point.last), Geokit::LatLng.new(ne_point.first, ne_point.last)]
+      end
+
       def includes_more_search_params?
         search_params[:name] || search_params[:food_type] || search_params[:description]
       end
@@ -89,7 +98,7 @@ module Api
       end
 
       def search_params
-        params.require(:search).permit(:name, :food_type, :description, :address, :latitude, :longitude, :distance) if params[:search]
+        params.require(:search).permit(:name, :food_type, :description, :address, :latitude, :longitude, :distance, :southwestPoint => [], :northeastPoint => []) if params[:search]
       end
 
       def vendor_params

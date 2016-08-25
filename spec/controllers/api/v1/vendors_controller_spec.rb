@@ -101,6 +101,18 @@ describe ::Api::V1::VendorsController do
           expect(assigns(:vendors)).to match_array([vendor2])
         end
       end
+
+      context "when bounds are provided" do
+        it "returns an empty array when it finds no vendors within bounds" do
+          get :index, :search =>{:southwestPoint => [-2.500082474182407,-2.7924880947029465], :northeastPoint => [2.3133981059400677,2.7924880947029465]}
+          expect(assigns(:vendors)).to match_array([])
+        end
+
+        it "returns vendors if they are within the bounds" do
+          get :index, :search =>{:southwestPoint => [38.83426108295464, -113.4888920190281], :northeastPoint => [41.433909845677945, -109.5446812982527]}
+          expect(assigns(:vendors)).to match_array([vendor1, vendor2])
+        end
+      end
     end
   end
 
